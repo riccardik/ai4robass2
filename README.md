@@ -1,12 +1,14 @@
 # ai4robass2
 
-
+## Compilation steps
+### popf-tif
 install dependencies to compile popf-tif
 
     sudo apt-get install coinor-libcbc-dev coinor-libclp-dev coinor-libcoinutils-dev coinor-libosi-dev coinor-libcgl-dev
 
 read the readme inside `./popf-tif` to compile it
 
+### visitsolver
 install dependencies to compile visitsolver
 
     sudo apt-get install liblapack-dev
@@ -16,3 +18,5 @@ install dependencies to compile visitsolver
 
 run `./visits_module/buildInstruction.txt` to compile the module
 
+## Run the solver
+open the bash script `./run_planner.bash`, change the necessary paths and names and run it
