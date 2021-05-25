@@ -19,4 +19,4 @@ install dependencies to compile visitsolver
 run `./visits_module/buildInstruction.txt` to compile the module
 
 ## Run the solver
-open the bash script `./run_planner.bash`, change the necessary paths and names and run it
+open the bash script `./run_planner.bash` with a text editor, change the necessary paths and names and run it
