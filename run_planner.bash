@@ -10,4 +10,4 @@ popf3path=/mnt/c/Users/rick/Desktop/visits/popf-tif/planner/release/popf/popf3-c
 visitspath=/mnt/c/Users/rick/Desktop/visits/visits_module/build/libVisits.so
 
 #save plan 
-$popf3path $path$domain $path$problem $visitspath $extsolverinput
+$popf3path -x $path$domain $path$problem $visitspath $path$extsolverinput 
