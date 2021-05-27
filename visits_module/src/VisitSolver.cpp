@@ -54,7 +54,7 @@ void VisitSolver::loadSolver(string *parameters, int n)
   starting_position = "r0";
   string Paramers = parameters[0];
 
-  char const *x[] = {"dummy"};
+  char const *x[] = {"actcost", "dummy"};
   char const *y[] = {"act-cost", "triggered"};
   parseParameters(Paramers);
   affected = list<string>(x, x + 1);
@@ -79,6 +79,7 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
   double act_cost;
   double asdf;
   double totalcost;
+  double actcost;
 
   map<string, double> trigger;
   double res2 = 0;
@@ -175,7 +176,11 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
       else if (function == "act-cost")
       {
         act_cost = value;
-      } 
+      }
+      else if (function == "actcost")
+      {
+        actcost = value;
+      }  
       else if (function == "asdf")
       {
         asdf= value;
@@ -196,9 +201,10 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
   {
     cout << "(dummy) " << results << endl;
   }
-   cout << "(dummy) " << results << endl;
+   //cout << "(dummy) " << results << endl;
 
-  toReturn["(dummy)"] = res2;
+  //toReturn["(dummy)"] = res2;
+  toReturn["(actcost)"] = res2;
   res2=2;
   //toReturn["(act-cost)"] = res2;
   //toReturn["(dummy)"] = res2;
@@ -241,8 +247,10 @@ void VisitSolver::parseParameters(string parameters)
         curr = next + 1;
         
       }
-      cout<<"name"<<region_name<<": ";
-      cout<<region_mapping[region_name][0]<<endl;
+
+      //to understand the format of the structure
+      //cout<<"name"<<region_name<<": ";
+      //cout<<region_mapping[region_name][0]<<endl;
     }
   }
 }
@@ -282,8 +290,10 @@ void VisitSolver::parseWaypoint(string waypoint_file)
       pose3 = (double)atof(line.substr(curr, next - curr).c_str());
 
       waypoint[waypoint_name] = vector<double>{pose1, pose2, pose3};
-      cout<<"waypoint: "<<waypoint_name<<": ";
-      cout<<waypoint[waypoint_name][0]<<","<<waypoint[waypoint_name][1]<<","<<waypoint[waypoint_name][2]<<endl;
+
+      //to understand the format of the structure
+      //cout<<"waypoint: "<<waypoint_name<<": ";
+      //cout<<waypoint[waypoint_name][0]<<","<<waypoint[waypoint_name][1]<<","<<waypoint[waypoint_name][2]<<endl;
     }
   }
 }

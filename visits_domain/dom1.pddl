@@ -17,6 +17,7 @@
 		(triggered ?from ?to - region) 
 		(dummy)
 		(totalcost)
+		(actcost)
 )
 
 (:durative-action goto_region
@@ -32,10 +33,10 @@
 			;(at end (decrease (act-cost) 1))
 			;(at end (increase (dummy) 1))
 			;(at end(assign (act-cost) (+ (act-cost) 1)))
-			(at end (increase (act-cost) dummy))
+			;(at end (increase (act-cost) dummy))
 			;(at end (increase (dummy) 1))
 			;(at end (increase (dummy) (act-cost)))
-			(at end (increase (totalcost) dummy))
+			(at end (increase (totalcost) actcost))
 		)
 )
 

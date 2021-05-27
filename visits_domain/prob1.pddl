@@ -10,6 +10,7 @@
     (= (act-cost) 0)
     (= (dummy) 1)
     (=(totalcost) 0)
+    (=(actcost) 0)
 
  
 )
