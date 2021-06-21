@@ -11,13 +11,11 @@
     (= (dummy) 1)
     (=(totalcost) 0)
     (=(actcost) 0)
-   
-    
 
  
 )
 (:goal 
-     (and   (visited r1) (visited r2)
+     (and (visited r1)  (visited r2)
           (visited r3) (visited r4) )
 )
 ;(:metric minimize (act-cost) )
