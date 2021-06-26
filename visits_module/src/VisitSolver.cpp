@@ -115,55 +115,16 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
 
           // localize(from, to);
           cout <<to<<","<<from <<endl;
-          //cout<<*landmark[0,0]<<endl;
-          vector<double> aasd = waypoint[to];
-          //cout<<aasd[0]<<aasd[1]<<aasd[2]<<endl;
-          //cout<<aasd[0]<<endl;
-          /* cout<<"size landmark"<<waypoint.size()<<endl;
-          cout<<"size aasd"<<aasd.size()<<endl; */
           
-           /* for (int i = 0; i < landmark.size(); i++) {
-            cout <<"landmark"<< landmark[i] << endl;
-          } */
-          /* for (int i = 0; i < waypoint.size(); i++) {
-            cout <<"landmark"<< waypoint[i] << endl;
-          } 
-          for (int i = 0; i < aasd.size(); i++) {
-            cout << "aasd"<<aasd[i] << endl;
-          }*/
-
-
-
-
           
           string wp_from=region_mapping[from][0];
-          vector<double> wp_f = {waypoint[wp_from][0], waypoint[wp_from][1], waypoint[wp_from][2]};
-
-          /* cout<<"the waypoint of the \"from\" region "<<from<<" is "<<region_mapping[from][0]<<endl;
-          cout<<"waypoint coords:["<<waypoint[wp_from][0]<<","<<waypoint[wp_from][1]<<","<<waypoint[wp_from][2]<<"]"<<endl; */
 
           string wp_to=region_mapping[to][0];
-          vector<double> wp_t = {waypoint[wp_to][0], waypoint[wp_to][1], waypoint[wp_to][2]};
 
-          /* cout<<"the waypoint of the \"to\" region "<<to<<" is "<<region_mapping[to][0]<<endl;
-          cout<<"waypoint coords:["<<waypoint[wp_to][0]<<","<<waypoint[wp_to][1]<<","<<waypoint[wp_to][2]<<"]"<<endl; */
+          double computed_distance = localize(wp_from, wp_to);
 
-          vector<double> distance ={wp_t[0]-wp_f[0],wp_t[1]-wp_f[1],wp_t[2]-wp_f[2]};
-          //set_difference(wp_f.begin(), wp_f.end(), wp_t.begin(), wp_t.end(),inserter(distance, distance.begin()));
-          cout<<"distance between start and end wp:["<<distance[0]<<","<<distance[1]<<","<<distance[2]<<"]"<<endl;
-
-
-
-          act_cost = act_cost+2;
           
-
-          double euc_d = sqrt(distance[0]*distance[0]+distance[1]*distance[1]);
-
-          cout<<"the euclidean distance between "<<wp_from<<" and " <<wp_to<<" is: "<<euc_d<<endl; 
-
-          //res2=4;
-          res2 = euc_d;
-
+          res2 = computed_distance;
         }
       }
     }
@@ -196,10 +157,10 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
     }
   }
 
-  double results = calculateExtern(dummy, act_cost);
+  //double results = calculateExtern(dummy, act_cost);
   if (ExternalSolver::verbose)
   {
-    cout << "(dummy) " << results << endl;
+    //cout << "(dummy) " << results << endl;
   }
    //cout << "(dummy) " << results << endl;
 
@@ -331,5 +292,25 @@ void VisitSolver::parseLandmark(string landmark_file)
   }
 }
 
-//void VisitSolver::localize( string from, string to){
-//}
+double VisitSolver::localize( string wp_from, string wp_to){
+  vector<double> wp_f = {waypoint[wp_from][0], waypoint[wp_from][1], waypoint[wp_from][2]};
+
+  //cout<<"the waypoint of the \"from\" region "<<from<<" is "<<region_mapping[from][0]<<endl;
+  //cout<<"waypoint coords:["<<waypoint[wp_from][0]<<","<<waypoint[wp_from][1]<<","<<waypoint[wp_from][2]<<"]"<<endl;
+
+  
+  vector<double> wp_t = {waypoint[wp_to][0], waypoint[wp_to][1], waypoint[wp_to][2]};
+
+  //cout<<"the waypoint of the \"to\" region "<<to<<" is "<<region_mapping[to][0]<<endl;
+  //cout<<"waypoint coords:["<<waypoint[wp_to][0]<<","<<waypoint[wp_to][1]<<","<<waypoint[wp_to][2]<<"]"<<endl;
+
+  vector<double> distance ={wp_t[0]-wp_f[0],wp_t[1]-wp_f[1],wp_t[2]-wp_f[2]};
+  //set_difference(wp_f.begin(), wp_f.end(), wp_t.begin(), wp_t.end(),inserter(distance, distance.begin()));
+  //cout<<"distance between start and end wp:["<<distance[0]<<","<<distance[1]<<","<<distance[2]<<"]"<<endl;
+
+
+  double euc_d = sqrt(distance[0]*distance[0]+distance[1]*distance[1]);
+
+  cout<<"the euclidean distance between "<<wp_from<<" and " <<wp_to<<" is: "<<euc_d<<endl;
+  return euc_d;
+}

@@ -7,8 +7,8 @@
 (:init
     (robot_in R2D2 r0)
 
-    (= (act-cost) 0)
-    (= (dummy) 1)
+    ;(= (act-cost) 0)
+    ;(= (dummy) 1)
     (=(totalcost) 0)
     (=(actcost) 0)
    

@@ -59,7 +59,7 @@ private:
     list<string> dependencies;
       
     double calculateExtern(double external, double total_cost);
-    //void localize(string from, string to);
+    double localize(string from, string to);
     vector<string> findParameters(string line, int&n);
 
 };
