@@ -117,17 +117,15 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
           string from = tmp.substr(0, 2); // from and to are regions, need to extract wps (poses)
           string to = tmp.substr(3, 2);
 
-          // localize(from, to);
-          cout <<to<<","<<from <<endl;
           
+          //cout <<to<<","<<from <<endl;
           
+          //find the start and goal waypoint
           string wp_from=region_mapping[from][0];
-
           string wp_to=region_mapping[to][0];
 
-          double computed_distance = localize(wp_from, wp_to);
-
-          
+          //perform the simulation of the path and compute the traveled distance
+          double computed_distance = localize(wp_from, wp_to);          
           res2 = computed_distance;
         }
       }
@@ -154,26 +152,18 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
       {
         totalcost = value;
       } 
-      //else if(function=="dummy1"){
-      //duy = value;
-      ////cout << parameter << " " << value << endl;
-      //}
+      
     }
   }
 
-  //double results = calculateExtern(dummy, act_cost);
   if (ExternalSolver::verbose)
   {
-    //cout << "(dummy) " << results << endl;
+    
   }
-   //cout << "(dummy) " << results << endl;
-
-  //toReturn["(dummy)"] = res2;
+   
+  //return the value of the computed cost for the act
   toReturn["(actcost)"] = res2;
-  res2=2;
-  //toReturn["(act-cost)"] = res2;
-  //toReturn["(dummy)"] = res2;
-  //toReturn["(asdf)"] = res2;
+  
 
   return toReturn;
 }
@@ -294,11 +284,13 @@ void VisitSolver::parseLandmark(string landmark_file)
 
       landmark[landmark_name] = vector<double>{pose1, pose2, pose3};
       
+      //build the structure to easily access the waypoint positions
       landmarkNumber++;
       landmarkNames.push_back(landmark_name);
-      cout << landmark_name << endl;
+      //cout << landmark_name << endl;
     }
 
+    //print the landmark structure
     /* for (int i = 0; i < landmarkNumber; i++)
     {
       cout <<"landmark "<<i<<": " <<landmarkNames[i] << endl;
@@ -322,21 +314,16 @@ double VisitSolver::localize( string wp_from, string wp_to){
   //set_difference(wp_f.begin(), wp_f.end(), wp_t.begin(), wp_t.end(),inserter(distance, distance.begin()));
   //cout<<"distance between start and end wp:["<<distance[0]<<","<<distance[1]<<","<<distance[2]<<"]"<<endl;
 
-
   //euclidean distance between the waypoints
   double euc_d = sqrt(distance[0] * distance[0] + distance[1] * distance[1]);
 
   // we consider an omnidirectional robot (teta do not influence the heading of the robot, x y and teta can evolve independently)
   // velocity is considered as 1 unit/s and steps are considered each 0.2 [s]
-  
-
   double steps_per_second = 5;
+  //compute the number of steps and the constant evolution of the x and y position at each step
   int steps_ = ceil(euc_d * steps_per_second);
   double stepx = sqrt(pow(wp_t[0] - wp_f[0], 2))/steps_;
   double stepy = sqrt(pow(wp_t[1] - wp_f[1], 2))/steps_;
-
-
-  
 
   vector<double> step = {stepx, stepy};
   //cout << "step " << stepx <<"  "<<stepy<< endl;
@@ -354,7 +341,7 @@ double VisitSolver::localize( string wp_from, string wp_to){
   vector<double> p_1 = {0, 0.02};
 
   std::default_random_engine generator;
-  // sensor measurement error is assumed constant (+-2%)
+  // sensor measurement error distribution
   std::normal_distribution<double> distributionx(0,0.02*stepx);
   std::normal_distribution<double> distributiony(0,0.02*stepy);
 
@@ -390,29 +377,23 @@ double VisitSolver::localize( string wp_from, string wp_to){
     if (on_landmark !="false")
     {
       //cout <<on_landmark<< landmark[on_landmark][0] << landmark[on_landmark][1] endl;
-
-      cout << state[0] << state[1] << on_landmark << endl;
+      //cout << state[0] << state[1] << on_landmark << endl;
       //cout << "landmark found" << endl;
+
       //update the robot position as the landmark one+some noise
       state_ext[0] = landmark[on_landmark][0] + distribution_initial(generator);
       state_ext[1] = landmark[on_landmark][1] + distribution_initial(generator);
     }
 
-    //state_ext[0]
-
+    //print real and simulated positions for the current simulation step
     //cout << "step " <<i<<"x="<<state[0]<<"y="<<state[1]<<"x_ext="<<state_ext[0]<<"y_ext="<<state_ext[1]<<endl;
   }
-
-    //cout << "the euclidean distance between " << wp_from << " and " << wp_to << " is: " << euc_d << endl;
-
-  //return euc_d;
 
   // compute the euclidean distance between starting point and extimated reached one
   vector<double> simulated_distance = {state_ext[0] - wp_f[0], state_ext[1] - wp_f[1]};
   double euc_dnew = sqrt(simulated_distance[0] * simulated_distance[0] + simulated_distance[1] * simulated_distance[1]);
 
-  /* distance = {state[0] - wp_f[0], state[1] - wp_f[1]};
-  double euc_dnew = sqrt(distance[0] * distance[0] + distance[1] * distance[1]); */
+  //print the real euclidean distance and the simulated one
   //cout << "original eucd" << euc_d << "kf eucd" << euc_dnew << endl;
   return euc_dnew;
 }
