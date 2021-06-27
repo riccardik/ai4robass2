@@ -29,6 +29,10 @@
 
 #include "armadillo"
 #include <initializer_list>
+#include <random>
+
+
+
 
 using namespace std;
 using namespace arma;
@@ -308,9 +312,71 @@ double VisitSolver::localize( string wp_from, string wp_to){
   //set_difference(wp_f.begin(), wp_f.end(), wp_t.begin(), wp_t.end(),inserter(distance, distance.begin()));
   //cout<<"distance between start and end wp:["<<distance[0]<<","<<distance[1]<<","<<distance[2]<<"]"<<endl;
 
+  //euclidean distance between the waypoints
+  double euc_d = sqrt(distance[0] * distance[0] + distance[1] * distance[1]);
 
-  double euc_d = sqrt(distance[0]*distance[0]+distance[1]*distance[1]);
+  // we consider an omnidirectional robot (no need to consider orientation)
+  // velocity is considered as 1 unit/s and steps are considered each 0.2 [s]
+  
 
-  cout<<"the euclidean distance between "<<wp_from<<" and " <<wp_to<<" is: "<<euc_d<<endl;
-  return euc_d;
+  double steps_per_second = 5;
+  int steps_ = ceil(euc_d * steps_per_second);
+  double stepx = sqrt(pow(wp_t[0] - wp_f[0], 2))/steps_;
+  double stepy = sqrt(pow(wp_t[1] - wp_f[1], 2))/steps_;
+
+
+  
+
+  vector<double> step = {stepx, stepy};
+  //cout << "step " << stepx <<"  "<<stepy<< endl;
+
+  //trajectory between points
+  //p1(wp_f[0],wp_f[1]), p2(wp_t[0],wp_t[1])
+
+  //actual state
+  vector<double> state = {wp_f[0], wp_f[1]};
+  //extimated state
+  vector<double> cov_0 = {0.02, 0};
+  vector<double> cov_1 = {0, 0.02};
+  
+
+  std::default_random_engine generator;
+  // sensor measurement error is assumed constant (+-5%)
+  std::normal_distribution<double> distributionx(0,0.05*stepx);
+  std::normal_distribution<double> distributiony(0,0.05*stepy);
+
+  // initial state incertanty
+  std::normal_distribution<double> distribution_initial(0,3*0.02);
+
+  vector<double> state_ext = {wp_f[0] + distribution_initial(generator), wp_f[1] + distribution_initial(generator)};
+
+  double kg = 0.5;
+
+  for (int i = 0; i < steps_; i++)
+  {
+
+    state[0] = state[0] + step[0];
+    state[1] = state[1] + step[1];
+
+    //state_ext[0] = state_ext[0] +step[0]+  step[0]*cov_0[0] + step[0]*cov_1[0];
+    //state_ext[1] = state_ext[1] +step[1]+  step[1]*cov_0[1] + step[1]*cov_1[1];
+
+    state_ext[0] = (distributionx(generator)+step[0])+ state_ext[0];
+    state_ext[1] = (distributiony(generator)+step[1])+ state_ext[1];
+
+    //state_ext[0]
+
+    //cout << "step " <<i<<"x="<<state[0]<<"y="<<state[1]<<"x_ext="<<state_ext[0]<<"y_ext="<<state_ext[1]<<endl;
+  }
+
+    //cout << "the euclidean distance between " << wp_from << " and " << wp_to << " is: " << euc_d << endl;
+
+  //return euc_d;
+  vector<double> simulated_distance = {state_ext[0] - wp_f[0], state_ext[1] - wp_f[1]};
+  double euc_dnew = sqrt(simulated_distance[0] * simulated_distance[0] + simulated_distance[1] * simulated_distance[1]);
+
+  /* distance = {state[0] - wp_f[0], state[1] - wp_f[1]};
+  double euc_dnew = sqrt(distance[0] * distance[0] + distance[1] * distance[1]); */
+  cout << "original eucd" << euc_d << "kf eucd" << euc_dnew << endl;
+  return euc_dnew;
 }
