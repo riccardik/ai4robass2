@@ -52,7 +52,8 @@ public:
    
    
     void parseParameters(string parameters);
- 
+    int landmarkNumber;
+    vector<string> landmarkNames;
 
 private:
     list<string> affected;
@@ -61,7 +62,7 @@ private:
     double calculateExtern(double external, double total_cost);
     double localize(string from, string to);
     vector<string> findParameters(string line, int&n);
-
+    string LandmarkCheck(double x, double y);
 };
 
 #endif // TESTSOLVER_H
