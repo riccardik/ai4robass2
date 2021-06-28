@@ -4,18 +4,18 @@ Second assignment for the course of: Artificial Intelligence for Robotics II
 Robotic Engineering, UNIGE
 
 ## Group B 
-> Authors: 4070551, s5050695, s5103935, s5025439
+> 4070551, s5050695, s5103935, s5025439
 
 ## Compilation steps
 ### Popf-tif
-Install dependencies to compile popf-tif:
+Install necessary dependencies in order to compile the planner, popf-tif:
 
     sudo apt-get install coinor-libcbc-dev coinor-libclp-dev coinor-libcoinutils-dev coinor-libosi-dev coinor-libcgl-dev
 
 Read the readme inside `./popf-tif` to compile it.
 
 ### VisitSolver
-Tnstall dependencies to compile the external solver, VisitSolver:
+Install necessary dependencies in order to to compile the external solver, VisitSolver:
 
     sudo apt-get install liblapack-dev
     sudo apt-get install libblas-dev
