@@ -7,27 +7,30 @@ Robotic Engineering, UNIGE
 > Authors: 4070551, s5050695, s5103935, s5025439
 
 ## Compilation steps
-### popf-tif
-install dependencies to compile popf-tif
+### Popf-tif
+Install dependencies to compile popf-tif:
 
     sudo apt-get install coinor-libcbc-dev coinor-libclp-dev coinor-libcoinutils-dev coinor-libosi-dev coinor-libcgl-dev
 
-read the readme inside `./popf-tif` to compile it
+Read the readme inside `./popf-tif` to compile it.
 
-### visitsolver
-install dependencies to compile visitsolver
+### VisitSolver
+Tnstall dependencies to compile the external solver, VisitSolver:
 
     sudo apt-get install liblapack-dev
     sudo apt-get install libblas-dev
     sudo apt-get install libboost-dev
     sudo apt-get install libarmadillo-dev  # this is the necessary one, the other 3 might be already installed
 
-to compile the module run:
+The module has some hard-coded path inside of it, relative to the files where waypoints, landmarks and region are stored. Before compiling, modify them in `./visits_module/src/VisitSolver.cpp`.
+
+To compile the module run:
     
     ./visits_module/buildInstruction.txt
 
+
 ## Run the solver
-open the bash script `./run_planner.bash` with a text editor, change the necessary paths and names and run:
+Open the bash script `./run_planner.bash` with a text editor, change the necessary paths and names and run:
     
     ./run_planner.bash
 
