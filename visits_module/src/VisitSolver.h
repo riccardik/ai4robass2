@@ -55,6 +55,9 @@ public:
     int landmarkNumber;
     vector<string> landmarkNames;
 
+    vector<double> p_0;
+    vector<double> p_1;
+
 private:
     list<string> affected;
     list<string> dependencies;

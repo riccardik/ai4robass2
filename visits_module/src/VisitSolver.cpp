@@ -69,7 +69,8 @@ void VisitSolver::loadSolver(string *parameters, int n)
 
   string landmark_file = "/mnt/c/Users/rick/Desktop/visits/visits_domain/landmark.txt";
   parseLandmark(landmark_file);
-
+  p_0 = {0.02, 0};
+  p_1 = {0, 0.02};
   //startEKF();
 }
 
@@ -79,9 +80,7 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
   map<string, double> toReturn;
   map<string, double>::iterator iSIt = initialState.begin();
   map<string, double>::iterator isEnd = initialState.end();
-  double dummy;
-  double act_cost;
-  double asdf;
+
   double totalcost;
   double actcost;
 
@@ -132,22 +131,12 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
     }
     else
     {
-      if (function == "dummy")
-      {
-        dummy = value;
-      }
-      else if (function == "act-cost")
-      {
-        act_cost = value;
-      }
-      else if (function == "actcost")
+      
+      if (function == "actcost")
       {
         actcost = value;
       }  
-      else if (function == "asdf")
-      {
-        asdf= value;
-      } 
+      
       else if (function == "totalcost")
       {
         totalcost = value;
@@ -170,19 +159,16 @@ map<string, double> VisitSolver::callExternalSolver(map<string, double> initialS
 
 list<string> VisitSolver::getParameters()
 {
-
   return affected;
 }
 
 list<string> VisitSolver::getDependencies()
 {
-
   return dependencies;
 }
 
 void VisitSolver::parseParameters(string parameters)
 {
-
   int curr, next;
   string line;
   ifstream parametersFile(parameters.c_str());
@@ -199,8 +185,7 @@ void VisitSolver::parseParameters(string parameters)
         region_mapping[region_name].push_back(line.substr(curr, next - curr).c_str());
         if (next == -1)
           break;
-        curr = next + 1;
-        
+        curr = next + 1;        
       }
 
       //to understand the format of the structure
@@ -337,8 +322,8 @@ double VisitSolver::localize( string wp_from, string wp_to){
   vector<double> cov_0 = {0.02, 0};
   vector<double> cov_1 = {0, 0.02};
   
-  vector<double> p_0 = {0.02, 0};
-  vector<double> p_1 = {0, 0.02};
+  /* vector<double> p_0 = {0.02, 0};
+  vector<double> p_1 = {0, 0.02}; */
 
   std::default_random_engine generator;
   // sensor measurement error distribution
@@ -352,17 +337,16 @@ double VisitSolver::localize( string wp_from, string wp_to){
 
   double kg = 0.5;
 
+  // avoid unnecessary double update for the same landmark if the step size is too low
+  int landmark_found = 0;
+
   for (int i = 0; i < steps_; i++)
   {
     // Real state of the robot
     state[0] = state[0] + step[0];
     state[1] = state[1] + step[1];
 
-    //state_ext[0] = state_ext[0] +step[0]+  step[0]*cov_0[0] + step[0]*cov_1[0];
-    //state_ext[1] = state_ext[1] +step[1]+  step[1]*cov_0[1] + step[1]*cov_1[1];
-
     // Estimated state of the robot
-
     std::normal_distribution<double> distributionx(0,p_0[0]+p_0[1]);
     std::normal_distribution<double> distributiony(0,p_1[0]+p_1[2]);
 
@@ -372,17 +356,26 @@ double VisitSolver::localize( string wp_from, string wp_to){
     p_0 = {p_0[0] + cov_0[0], p_0[1] + cov_0[1]};
     p_1 = {p_1[0] + cov_1[0], p_1[1] + cov_1[1]};
 
-    //check if the robot passes over a landmark
+    //cout << "P " << p_0[0] << "," << p_1[1] << endl;
+
+    //check if the robot passes over a landmark and if in the previous state it has found one
     string on_landmark = LandmarkCheck(state[0], state[1]);
-    if (on_landmark !="false")
+    if (on_landmark !="false" && landmark_found != 1)
     {
       //cout <<on_landmark<< landmark[on_landmark][0] << landmark[on_landmark][1] endl;
       //cout << state[0] << state[1] << on_landmark << endl;
       //cout << "landmark found" << endl;
 
-      //update the robot position as the landmark one+some noise
+      //update the robot position as the landmark one+some noise and update the P
+      p_0 = {0.02, 0};
+      p_1 = {0, 0.02};
       state_ext[0] = landmark[on_landmark][0] + distribution_initial(generator);
       state_ext[1] = landmark[on_landmark][1] + distribution_initial(generator);
+
+      landmark_found = 1;
+    }
+    else {
+      landmark_found = 0;
     }
 
     //print real and simulated positions for the current simulation step
@@ -408,7 +401,7 @@ string VisitSolver::LandmarkCheck(double x, double y)
 
     double euc_d2 = sqrt(pow(x-x_l, 2) + pow(y-y_l, 2));
     
-    if (euc_d2<0.02)
+    if (euc_d2<0.2)
     {
       //cout << "landmark detected, eucd="<<euc_d2 << endl;
       return landmarkNames[i];
