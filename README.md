@@ -26,3 +26,38 @@ run `./visits_module/buildInstruction.txt` to compile the module
 
 ## Run the solver
 open the bash script `./run_planner.bash` with a text editor, change the necessary paths and names and run it
+
+## Filetree
+
+```
+    .
+    ├── README.md
+    ├── report.pdf
+    ├── run_planner.bash
+    ├── visits_domain
+    │   ├── dom1.pddl
+    │   ├── dom1_old.pddl
+    │   ├── landmark.txt
+    │   ├── libVisits.so.old
+    │   ├── popf3-clp.old
+    │   ├── prob1.pddl
+    │   ├── prob1_old.pddl
+    │   ├── region_poses
+    │   └── waypoint.txt
+    └── visits_module
+        ├── build
+        │   ├── Makefile
+        │   ├── VisitMain
+        │   ├── cmake_install.cmake
+        │   └── libVisits.so
+        └── src
+            ├── CMakeLists.txt
+            ├── ExternalSolver.cpp
+            ├── ExternalSolver.h
+            ├── VisitSolver.cpp
+            ├── VisitSolver.h
+            ├── buildInstruction.bash
+            ├── buildInstruction.txt
+            └── main.cpp
+
+```
