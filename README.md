@@ -1,4 +1,6 @@
 # ai4robass2
+## Group B 
+Authors: 4070551, s5050695, s5103935, s5025439
 
 ## Compilation steps
 ### popf-tif
