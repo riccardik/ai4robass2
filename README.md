@@ -1,6 +1,9 @@
 # ai4robass2
+Second assignment for the course of: Artificial Intelligence for Robotics II
+Robotic Engineering, UNIGE
+
 ## Group B 
-Authors: 4070551, s5050695, s5103935, s5025439
+> Authors: 4070551, s5050695, s5103935, s5025439
 
 ## Compilation steps
 ### popf-tif
